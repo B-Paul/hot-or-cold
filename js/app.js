@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
 
-  var guesses, feedback, defaultFeedback counter, guesses, game;
+  var guesses, feedback, defaultFeedback, counter, guesses, game;
 	
 	/*--- Display information modal box ---*/
 	$(".what").click(function(){
@@ -56,7 +56,8 @@ $(document).ready(function(){
   }
 
   function Game() {
-    var theNumber = getRandom()
+    var theNumber, distance, lastDistance;
+    theNumber = getRandom()
 
     this.success = false;
     this.guessCount = 0;
@@ -72,7 +73,9 @@ $(document).ready(function(){
         this.success = true;
         return "Got it! Good guessing.";
       } else {
-        return giveFeedback(Math.abs(userGuess - theNumber));
+        lastDistance = distance;
+        distance = Math.abs(userGuess - theNumber)
+        return giveRelativeFeedback(distance, lastDistance);
       }
     };
   }
@@ -87,14 +90,26 @@ $(document).ready(function(){
 
   function giveFeedback(distance) {
     if (invalid(distance)) { throw new Error('Distance out of range'); }
-    return distance <   5  ? "Burning up!"
-         : distance <   10 ? "Pretty hot!"
-         : distance <   20 ? "Tepid"
-         : distance <   30 ? "Kinda chilly"
-         : distance <   40 ? "I'm starting to shiver"
-         : distance <   60 ? "You're colder than a polar bear's toenails"
-         : distance <   80 ? "So ... cold ..."
-         : "Everest is looking balmy right now."
+    return distance < 5  ? "You're burning up!"
+         : distance < 10 ? "It's feeling pretty hot!"
+         : distance < 20 ? "Tepid"
+         : distance < 30 ? "It feels kinda chilly."
+         : distance < 40 ? "I'm starting to shiver."
+         : distance < 60 ? "You're colder than a polar bear's toenails."
+         : distance < 80 ? "So ... cold ..."
+         : " Everest is looking balmy."
+  }
+
+  function giveRelativeFeedback(distance, lastDistance) {
+    var closer
+    if (invalid(distance)) { throw new Error('Distance out of range'); }
+    else if (!lastDistance) { return giveFeedback(distance); }
+    closer = lastDistance - distance;
+    return closer < 0   ? "You're getting colder."
+         : closer === 0 ? "That wasn't it. Guess something else."
+         : "You're getting warmer. Right now, " + giveFeedback(distance)
+            .replace(/^./, function (s) { return s.toLowerCase(); })
+            .trim();
   }
 
 });
