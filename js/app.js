@@ -96,7 +96,7 @@ $(document).ready(function(){
          : distance < 30 ? "It feels kinda chilly."
          : distance < 40 ? "I'm starting to shiver."
          : distance < 60 ? "You're colder than a polar bear's toenails."
-         : distance < 80 ? "So ... cold ..."
+         : distance < 80 ? "It's ... so ... cold ..."
          : " Everest is looking balmy."
   }
 
